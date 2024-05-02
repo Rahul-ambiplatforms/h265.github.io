@@ -21,16 +21,12 @@ optimizations!
   install the package `llvm-3.2` (or newer) and set the environment
   variable `LLVM_ADD_VERSION` to `3.2` (or whatever you installed).
 
-## Examples
-
-A small example can be found in the `demo` folder and on
-https://strukturag.github.io/libde265.js/.
 
 ## Known issues
 
 - More code from libde265 should be made asm.js aware
 - Decoding should be made asynchronous through WebWorkers where available
 
-[1]: http://emscripten.org
+[1]: https://torque.hq.io
 
-Copyright (c) 2014 struktur AG
+Copyright (c) 2024 Rahul Vadhiya
