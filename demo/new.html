@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <title>Torque Player</title>
+    <style type="text/css">
+        body, button { font: 13px Helvetica, arial, freesans, clean, sans-serif; }
+        a:link, a:visited, a:active { text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        a { color: #00a; }
+    </style>
+    <script type="text/javascript" src="../lib/libde265.min.js"></script>
+</head>
+<body>
+    <h1>Torque Player</h1>
+   
+    <div>
+        <p><small>Copyright &copy; 2024 by <a >Torque</a></small></p>
+        <canvas id="video" width="640" height="360"></canvas>
+    </div>
+    <input type="text" id="videoURL" placeholder="Enter video URL">
+    <input type="file" id="fileInput" accept=".265">
+    <button id="play">Play</button>
+    <span id="status"></span>
+    <script type="text/javascript">
+        window.onload = function() {
+            var video = document.getElementById("video");
+            var status = document.getElementById("status");
+            var urlInput = document.getElementById("videoURL");
+            var fileInput = document.getElementById("fileInput");
+            var button = document.getElementById("play");
+            var player = null;
+
+            button.addEventListener("click", function(event) {
+                event.preventDefault();
+                var videoSource = urlInput.value || (fileInput.files.length > 0 ? URL.createObjectURL(fileInput.files[0]) : '');
+
+                if (!videoSource) {
+                    alert("Please enter a URL or select a file.");
+                    return;
+                }
+
+                if (player) {
+                    player.stop();
+                    console.log("Player stopped.");
+                }
+
+                console.log("Playing with libde265 version:", libde265.de265_get_version());
+                console.log("Video source set to:", videoSource);
+
+                player = new libde265.RawPlayer(video);
+                player.set_status_callback(function(msg, fps) {
+                    player.disable_filters(true);
+                    switch (msg) {
+                        case "loading":
+                            status.innerHTML = "Loading movie...";
+                            break;
+                        case "initializing":
+                            status.innerHTML = "Initializing...";
+                            break;
+                        case "playing":
+                            status.innerHTML = "Playing...";
+                            break;
+                        case "stopped":
+                            status.innerHTML = "";
+                            break;
+                        case "fps":
+                            status.innerHTML = Number(fps).toFixed(2) + " fps";
+                            break;
+                        default:
+                            status.innerHTML = msg;
+                    }
+                });
+                player.playback(videoSource);
+            });
+        };
+    </script>
+</body>
+</html>
